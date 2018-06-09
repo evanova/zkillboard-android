@@ -2,6 +2,8 @@
     <string name="app_name">Zkill-A</string>
     <string name="action_settings">Settings</string>
 
+    <string name="row_kill_character">%1$s - %2$s</string>
     <string name="row_kill_location">%2$s - %1$s</string>
     <string name="row_kill_isk">%1$s fitted - %2$s total ISK</string>
+    <string name="row_kill_security">%1s</string>
 </resources>

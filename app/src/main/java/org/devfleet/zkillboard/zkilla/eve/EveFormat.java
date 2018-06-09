@@ -14,6 +14,25 @@ import java.util.TimeZone;
 public final class EveFormat {
     private static TimeZone TZ = TimeZone.getDefault();
 
+    public enum Number {
+        FLOAT(new DecimalFormat("##.##")), LONG(null);
+
+        private final NumberFormat numberFormat;
+
+        Number(final NumberFormat numberFormat) {
+            this.numberFormat = numberFormat;
+        }
+
+        public static String FLOAT(double value) {
+            return FLOAT.numberFormat.format(value);
+        }
+
+        public static String LONG(long value) {
+            return Long.toString(value);
+        }
+
+    }
+
     public enum Currency {
         SHORT("###,###,###.0"), MEDIUM("###,###,###,###,###"), LONG("###,###,###,###,###.00");
 

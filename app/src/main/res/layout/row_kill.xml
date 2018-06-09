@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/AppTheme.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -15,8 +16,8 @@
             android:id="@+id/rowKillVictimImage"
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:layout_marginEnd="4dp"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="4dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,13 +29,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/rowKillShipText"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/rowKillLocationText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    tools:text="Location"/>
+
+                <TextView
+                    android:id="@+id/rowKillSecurityText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    tools:text="Sec"/>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/rowKillLocationText"
+                android:id="@+id/rowKillShipText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

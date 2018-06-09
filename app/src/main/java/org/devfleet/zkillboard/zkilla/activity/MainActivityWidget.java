@@ -45,6 +45,9 @@ class MainActivityWidget extends FrameLayout {
         @BindView(R.id.rowKillLocationText)
         TextView locationText;
 
+        @BindView(R.id.rowKillSecurityText)
+        TextView securityText;
+
         @BindView(R.id.rowKillISKText)
         TextView iskText;
 
@@ -56,13 +59,22 @@ class MainActivityWidget extends FrameLayout {
         public void render(final ZKillEntity data) {
             EveImages.characterIcon(data.getVictim().getCharacterID(), this.victimImage);
 
-            victimText.setText(data.getVictim().getCharacterName());
+            victimText.setText(r(
+                    R.string.row_kill_character,
+                    data.getVictim().getCharacterName(),
+                    data.getVictim().getCorporationName()));
+
             shipText.setText(data.getVictim().getShipTypeName());
             locationText.setText(r(
                     R.string.row_kill_location,
                     data.getLocation().getConstellationName(),
                     data.getLocation().getSolarSystemName()));
-            locationText.setTextColor(EveFormat.getSecurityLevelColor(data.getLocation().getSecurity()));
+
+            securityText.setText(r(
+                    R.string.row_kill_security,
+                    EveFormat.Number.FLOAT(data.getLocation().getSecurity())));
+            securityText.setTextColor(EveFormat.getSecurityLevelColor(data.getLocation().getSecurity()));
+
             if (null == data.getZkb()) {
                 iskText.setVisibility(View.INVISIBLE);
             }
