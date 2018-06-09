@@ -3,7 +3,7 @@ package org.devfleet.zkillboard.zkilla.activity;
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 
-@Subcomponent
+@Subcomponent(modules = {MainActivityModule.class})
 public interface MainActivityComponent extends AndroidInjector<MainActivity> {
 
     @Subcomponent.Builder

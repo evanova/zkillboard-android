@@ -17,7 +17,7 @@ import android.widget.TextView;
 import org.devfleet.zkillboard.zkilla.R;
 import org.devfleet.zkillboard.zkilla.eve.EveFormat;
 import org.devfleet.zkillboard.zkilla.eve.EveImages;
-import org.devfleet.zkillboard.zkilla.eve.ZKillData;
+import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ class MainActivityWidget extends FrameLayout {
             ButterKnife.bind(this, itemView);
         }
 
-        public void render(final ZKillData data) {
+        public void render(final ZKillEntity data) {
             EveImages.characterIcon(data.getVictim().getCharacterID(), this.victimImage);
 
             victimText.setText(data.getVictim().getCharacterName());
@@ -86,7 +86,7 @@ class MainActivityWidget extends FrameLayout {
 
     static class ZKillAdapter extends RecyclerView.Adapter<ZKillHolder> {
 
-        private final List<ZKillData> data = new ArrayList<>();
+        private final List<ZKillEntity> data = new ArrayList<>();
         private int max = 100;
 
         @NonNull
@@ -110,7 +110,7 @@ class MainActivityWidget extends FrameLayout {
             return this.data.size();
         }
 
-        public synchronized void add(final ZKillData data) {
+        public synchronized void add(final ZKillEntity data) {
             if (this.data.size() == max) {
                 this.data.remove(this.data.size() - 1);
             }
@@ -125,7 +125,7 @@ class MainActivityWidget extends FrameLayout {
             notifyDataSetChanged();
         }
 
-        protected void onItemClicked(final ZKillData item, final int position) {
+        protected void onItemClicked(final ZKillEntity item, final int position) {
 
         }
     }
@@ -148,7 +148,7 @@ class MainActivityWidget extends FrameLayout {
         init();
     }
 
-    public void add(final ZKillData data) {
+    public void add(final ZKillEntity data) {
         this.adapter.add(data);
     }
 
@@ -159,7 +159,7 @@ class MainActivityWidget extends FrameLayout {
     private void init() {
         this.adapter = new ZKillAdapter() {
             @Override
-            protected void onItemClicked(final ZKillData item, final int position) {
+            protected void onItemClicked(final ZKillEntity item, final int position) {
                 if (null != listener) {
                     listener.onKillSelected(item.getKillID());
                 }

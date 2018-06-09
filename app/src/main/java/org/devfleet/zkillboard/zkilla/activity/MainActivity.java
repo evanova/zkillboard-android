@@ -3,31 +3,32 @@ package org.devfleet.zkillboard.zkilla.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import org.devfleet.zkillboard.zkilla.R;
-import org.devfleet.zkillboard.zkilla.eve.ZKillLive;
+import org.devfleet.zkillboard.zkilla.arch.ZKillActivity;
+import org.devfleet.zkillboard.zkilla.arch.ZKillPresenter;
 
-import javax.inject.Inject;
+public class MainActivity extends ZKillActivity<MainActivityData> {
 
-import dagger.android.AndroidInjection;
-
-public class MainActivity extends AppCompatActivity {
-
-    @Inject
-    ZKillLive zkill;
 
     private MainActivityWidget widget;
 
     @Override
+    protected Class<? extends ZKillPresenter> getPresenterClass() {
+        return MainActivityPresenter.class;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         this.widget = new MainActivityWidget(this);
         this.widget.setListener(killID -> {
@@ -36,15 +37,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         final ViewGroup container = findViewById(R.id.activityContainer);
         container.addView(this.widget);
 
-        this.zkill.observe(this, data -> {
+        final MainActivityPresenter presenter = getPresenter();
+        presenter.getData().getKill().observe(this, k -> this.widget.add(k));
+       /* this.zkill.observe(this, data -> {
             this.widget.add(data);
-        });
+        });*/
     }
 
     @Override

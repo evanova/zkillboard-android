@@ -7,6 +7,7 @@ import android.support.annotation.WorkerThread;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +37,16 @@ public class ZKillClient {
     private final PublishSubject<String> subject = PublishSubject.create();
 
     private WebSocket ws = null;
+    private String channel = "killstream";
 
     @CallSuper
     public void open(final String channel) {
+        if ((null != ws) && StringUtils.equals(this.channel, channel)) {
+            return;
+        }
+        this.channel = channel;
         closeImpl();
-        openImpl(channel);
+        openImpl();
     }
 
     @CallSuper
@@ -49,7 +55,7 @@ public class ZKillClient {
     }
 
     @WorkerThread
-    protected void onMessage(final ZKillData data) {}
+    protected void onMessage(final ZKillEntity data) {}
 
     protected void onOpen() {}
 
@@ -64,15 +70,11 @@ public class ZKillClient {
         }
     }
 
-    private synchronized void openImpl(final String channel) {
-        if (null != this.ws) {
-            return;
-        }
-
+    private synchronized void openImpl() {
         final Disposable disposable = this.subject
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .map(s -> MAPPER.readValue(s, ZKillData.class))
+                    .map(s -> MAPPER.readValue(s, ZKillEntity.class))
                     .subscribe(d -> ZKillClient.this.onMessage(d));
 
         final OkHttpClient client = new OkHttpClient.Builder()
