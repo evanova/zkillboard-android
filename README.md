@@ -1,5 +1,7 @@
 # zkillboard-android
-Eve Online ZKillboard Android Application
+### Eve Online ZKillboard Android Application
+
+Please note that this is experimental and not a final version of anything.
 
 
 ### Sideload Me
