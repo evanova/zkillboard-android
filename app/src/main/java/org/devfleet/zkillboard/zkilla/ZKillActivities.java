@@ -3,8 +3,8 @@ package org.devfleet.zkillboard.zkilla;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProvider;
 
-import org.devfleet.zkillboard.zkilla.activity.MainActivity;
-import org.devfleet.zkillboard.zkilla.activity.MainActivityComponent;
+import org.devfleet.zkillboard.zkilla.activity.main.MainActivity;
+import org.devfleet.zkillboard.zkilla.activity.main.MainActivityComponent;
 import org.devfleet.zkillboard.zkilla.arch.ZKillModelFactory;
 
 import dagger.Binds;

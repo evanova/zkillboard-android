@@ -3,7 +3,7 @@ package org.devfleet.zkillboard.zkilla;
 import android.content.Context;
 
 
-import org.devfleet.zkillboard.zkilla.activity.MainActivityComponent;
+import org.devfleet.zkillboard.zkilla.activity.main.MainActivityComponent;
 import org.devfleet.zkillboard.zkilla.eve.ESIClient;
 import org.devfleet.zkillboard.zkilla.eve.ZKillClient;
 

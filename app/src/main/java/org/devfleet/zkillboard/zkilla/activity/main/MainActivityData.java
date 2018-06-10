@@ -1,4 +1,4 @@
-package org.devfleet.zkillboard.zkilla.activity;
+package org.devfleet.zkillboard.zkilla.activity.main;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -7,7 +7,7 @@ import android.support.annotation.WorkerThread;
 import org.devfleet.zkillboard.zkilla.arch.ZKillData;
 import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
 
-public class MainActivityData extends ZKillData {
+class MainActivityData extends ZKillData {
 
     public enum State {
         CONNECTING,

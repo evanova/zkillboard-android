@@ -1,4 +1,4 @@
-package org.devfleet.zkillboard.zkilla.activity;
+package org.devfleet.zkillboard.zkilla.activity.main;
 
 import android.support.annotation.MainThread;
 
