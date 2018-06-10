@@ -9,19 +9,20 @@ import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
 
 public class MainActivityData extends ZKillData {
 
-    public enum ZKillState {
+    public enum State {
+        CONNECTING,
         CONNECTED,
         DISCONNECTED,
         ERROR
     }
 
     private final MutableLiveData<ZKillEntity> kill;
-    private final MutableLiveData<ZKillState> state;
+    private final MutableLiveData<State> state;
 
-    public MainActivityData(final MutableLiveData<ZKillEntity> kill, final MutableLiveData<ZKillState> state) {
+    public MainActivityData(final MutableLiveData<ZKillEntity> kill, final MutableLiveData<State> state) {
         this.kill = kill;
         this.state = state;
-        this.state.setValue(ZKillState.DISCONNECTED);
+        this.state.setValue(State.DISCONNECTED);
     }
 
     public LiveData<ZKillEntity> getKill() {
@@ -33,12 +34,13 @@ public class MainActivityData extends ZKillData {
         this.kill.postValue(zkill);
     }
 
-    public LiveData<ZKillState> getState() {
+    public LiveData<State> getState() {
         return state;
     }
 
     @WorkerThread
-    void setState(final ZKillState state) {
+    void setState(final State state) {
         this.state.postValue(state);
     }
+
 }

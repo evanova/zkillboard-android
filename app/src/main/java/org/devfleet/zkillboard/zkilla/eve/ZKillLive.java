@@ -3,7 +3,9 @@ package org.devfleet.zkillboard.zkilla.eve;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.LongSparseArray;
 
 import com.annimon.stream.Stream;
@@ -18,6 +20,7 @@ import java.util.List;
 
 public class ZKillLive extends MutableLiveData<ZKillEntity> {
     private String channel = "killstream";
+    private boolean enabled = false;
 
     private final ZKillClient zk;
 
@@ -25,7 +28,10 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
         this.zk = new ZKillClient() {
             @Override
             protected void onMessage(final ZKillEntity data) {
-                postValue(map(esi, data));
+                final ZKillEntity mapped = map(esi, data);
+                if (null != mapped) {
+                    postValue(mapped);
+                }
             }
 
             @Override
@@ -45,16 +51,36 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
         };
     }
 
-    public void setChannel(final String channel) {
+    @CallSuper
+    public synchronized void setChannel(final String channel) {
         if (StringUtils.equals(this.channel, channel)) {
             return;
         }
 
         this.zk.close();
-        this.channel = channel;
+        if (StringUtils.isBlank(channel)) {
+            this.channel = null;
+            return;
+        }
+
+        this.channel = channel.trim();
+        if (this.enabled) {
+            this.zk.open(this.channel);
+        }
     }
 
-    public void setEnabled(final boolean enabled) {
+    @Nullable
+    public final String getChannel() {
+        return channel;
+    }
+
+    @CallSuper
+    public synchronized void setEnabled(final boolean enabled) {
+        if (enabled == this.enabled) {
+            return;
+        }
+
+        this.enabled = enabled;
         if (enabled) {
             this.zk.open(this.channel);
         }
@@ -70,6 +96,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
     protected void onFailure(Throwable t) {}
 
     @Override
+    @CallSuper
     public void observe(@NonNull final LifecycleOwner owner, @NonNull final Observer<ZKillEntity> observer) {
         super.observe(owner, observer);
         if (hasObservers()) {
@@ -78,6 +105,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
     }
 
     @Override
+    @CallSuper
     public void observeForever(@NonNull final Observer<ZKillEntity> observer) {
         super.observeForever(observer);
         if (hasObservers()) {
@@ -86,6 +114,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
     }
 
     @Override
+    @CallSuper
     public void removeObserver(@NonNull final Observer<ZKillEntity> observer) {
         super.removeObserver(observer);
         if (!hasObservers()) {
@@ -94,6 +123,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
     }
 
     @Override
+    @CallSuper
     public void removeObservers(@NonNull final LifecycleOwner owner) {
         super.removeObservers(owner);
         if (!hasObservers()) {

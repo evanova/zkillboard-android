@@ -3,32 +3,23 @@ package org.devfleet.zkillboard.zkilla.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import org.devfleet.zkillboard.zkilla.R;
 import org.devfleet.zkillboard.zkilla.arch.ZKillActivity;
-import org.devfleet.zkillboard.zkilla.arch.ZKillPresenter;
+import org.devfleet.zkillboard.zkilla.arch.ZKillView;
 
+@ZKillView(
+        value = MainActivityPresenter.class,
+        title = R.string.app_title)
 public class MainActivity extends ZKillActivity<MainActivityData> {
-
 
     private MainActivityWidget widget;
 
     @Override
-    protected Class<? extends ZKillPresenter> getPresenterClass() {
-        return MainActivityPresenter.class;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         this.widget = new MainActivityWidget(this);
         this.widget.setListener(killID -> {
@@ -37,15 +28,31 @@ public class MainActivity extends ZKillActivity<MainActivityData> {
             startActivity(intent);
         });
 
-
-        final ViewGroup container = findViewById(R.id.activityContainer);
-        container.addView(this.widget);
+        setView(this.widget);
 
         final MainActivityPresenter presenter = getPresenter();
-        presenter.getData().getKill().observe(this, k -> this.widget.add(k));
-       /* this.zkill.observe(this, data -> {
-            this.widget.add(data);
-        });*/
+        presenter.getData().getKill().observe(this, k -> {
+            if (null == k) {
+                return;
+            }
+            this.widget.add(k);
+        });
+
+        presenter.getData().getState().observe(this, s -> {
+            switch (s) {
+                case CONNECTING:
+                    setDescription(R.string.app_description_connecting);
+                    break;
+                case CONNECTED:
+                    setDescription(r(R.string.app_description_connected, presenter.getChannel()));
+                    break;
+                case DISCONNECTED:
+                case ERROR:
+                default:
+                    setDescription(R.string.app_description_disconnected);
+                    break;
+            }
+        });
     }
 
     @Override

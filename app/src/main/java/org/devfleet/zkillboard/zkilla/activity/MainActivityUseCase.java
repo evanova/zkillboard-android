@@ -15,21 +15,21 @@ class MainActivityUseCase extends ZKillUseCase<MainActivityData> {
 
     @Inject
     public MainActivityUseCase(final ESIClient esi) {
-        final MutableLiveData<MainActivityData.ZKillState> state = new MutableLiveData<>();
+        final MutableLiveData<MainActivityData.State> state = new MutableLiveData<>();
         this.zkill = new ZKillLive(esi) {
             @Override
             protected void onOpen() {
-                state.postValue(MainActivityData.ZKillState.CONNECTED);
+                state.postValue(MainActivityData.State.CONNECTED);
             }
 
             @Override
             protected void onClose() {
-                state.postValue(MainActivityData.ZKillState.DISCONNECTED);
+                state.postValue(MainActivityData.State.DISCONNECTED);
             }
 
             @Override
             protected void onFailure(final Throwable t) {
-                state.postValue(MainActivityData.ZKillState.ERROR);
+                state.postValue(MainActivityData.State.ERROR);
             }
         };
         this.data = new MainActivityData(this.zkill, state);
@@ -44,7 +44,14 @@ class MainActivityUseCase extends ZKillUseCase<MainActivityData> {
         this.zkill.setChannel(channel);
     }
 
+    protected String getChannel() {
+        return this.zkill.getChannel();
+    }
+
     protected void setEnabled(final boolean enabled) {
+        if (enabled) {
+            this.data.setState(MainActivityData.State.CONNECTING);
+        }
         this.zkill.setEnabled(enabled);
     }
 }
