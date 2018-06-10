@@ -13,6 +13,7 @@ public class MainActivityData extends ZKillData {
         CONNECTING,
         CONNECTED,
         DISCONNECTED,
+        UNAVAILABLE,
         ERROR
     }
 

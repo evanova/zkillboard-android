@@ -44,6 +44,10 @@ public class MainActivityPresenter extends ZKillPresenter<MainActivityData> {
         this.useCase.setChannel(channel);
     }
 
+    public boolean getEnabled() {
+        return this.enabled;
+    }
+
     @MainThread
     void setEnabled(final boolean enabled) {
         this.enabled = enabled;

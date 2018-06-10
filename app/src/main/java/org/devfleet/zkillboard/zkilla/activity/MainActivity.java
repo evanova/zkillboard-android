@@ -57,23 +57,36 @@ public class MainActivity extends ZKillActivity<MainActivityData> {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        final MainActivityPresenter presenter = getPresenter();
+        setMenuItem(menu, R.id.main_action_pause, presenter.getEnabled());
+        setMenuItem(menu, R.id.main_action_resume, !presenter.getEnabled());
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        final MainActivityPresenter presenter = getPresenter();
+        switch (item.getItemId()) {
+            case R.id.main_action_settings:
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.main_action_resume:
+                presenter.setEnabled(true);
+                supportInvalidateOptionsMenu();
+                return true;
+
+            case R.id.main_action_pause:
+                presenter.setEnabled(false);
+                supportInvalidateOptionsMenu();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

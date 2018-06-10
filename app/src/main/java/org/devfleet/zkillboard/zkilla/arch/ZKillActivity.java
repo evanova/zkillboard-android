@@ -66,11 +66,13 @@ public abstract class ZKillActivity<T extends ZKillData> extends AppCompatActivi
 
     @Override
     public final void setTitle(final CharSequence title) {
+        super.setTitle(title);
         this.toolbar.setTitle(title);
     }
 
     @Override
     public final void setTitle(@StringRes final int title) {
+        super.setTitle(title);
         this.toolbar.setTitle(title);
     }
 
