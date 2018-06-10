@@ -21,14 +21,6 @@ import java.util.List;
 
 public class ZKillLive extends MutableLiveData<ZKillEntity> {
 
-    public enum State {
-        CONNECTING,
-        CONNECTED,
-        DISCONNECTED,
-        UNAVAILABLE,
-        ERROR
-    }
-
     private String channel = "killstream";
     private boolean enabled = false;
 
@@ -39,9 +31,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
         this.zk.setListener(new ZKillClient.Listener() {
             @Override
             protected void onMessage(final ZKillEntity data) {
-                if (null != data) {
-                    postValue(data);
-                }
+                postValue(data);
             }
 
             @Override

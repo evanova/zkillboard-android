@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="app.settings">
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="settings.network"
+        android:summary="@string/settings_network_summary"
+        android:title="@string/settings_network_title"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="settings.battery"
+        android:summary="@string/settings_battery_summary"
+        android:title="@string/settings_battery_title"/>
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="settings.portraits"
+        android:summary="@string/settings_portraits_summary"
+        android:title="@string/settings_portraits_title"/>
+</PreferenceScreen>

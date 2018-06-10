@@ -39,16 +39,14 @@ public class ESIClient {
 
     public ESIClient(
             final File cache,
-            final long cacheSize,
-            final long timeout) {
-        this("tranquility", cache, cacheSize, timeout);
+            final long cacheSize) {
+        this("tranquility", cache, cacheSize);
     }
 
     public ESIClient(
             final String datasource,
             final File cache,
-            final long cacheSize,
-            final long timeout) {
+            final long cacheSize) {
         this.datasource = datasource;
         OkHttpClient.Builder builder =
                 new OkHttpClient.Builder()
@@ -76,10 +74,9 @@ public class ESIClient {
             builder.addInterceptor(log);
         }
 
-        if (timeout != -1) {
-            builder.readTimeout(timeout, TimeUnit.MILLISECONDS);
-            builder.writeTimeout(timeout, TimeUnit.MILLISECONDS);
-        }
+        builder.readTimeout(30, TimeUnit.SECONDS);
+        builder.writeTimeout(30, TimeUnit.SECONDS);
+        builder.connectTimeout(30, TimeUnit.SECONDS);
 
         if (null != cache) {
             builder.cache(new Cache(cache, cacheSize));

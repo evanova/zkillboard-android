@@ -17,6 +17,8 @@ class MainActivityWidget extends FrameLayout {
     }
 
     private KillListAdapter adapter;
+    private RecyclerView recycler;
+
     private Listener listener;
 
     public MainActivityWidget(@NonNull final Context context) {
@@ -36,12 +38,16 @@ class MainActivityWidget extends FrameLayout {
 
     public void add(final ZKillEntity data) {
         this.adapter.add(data);
+        this.recycler.scrollToPosition(0);
     }
 
     public void setListener(final Listener listener) {
         this.listener = listener;
     }
 
+    public void setPortraitVisible(final boolean visible) {
+        this.adapter.setPortraitVisible(visible);
+    }
     private void init() {
         this.adapter = new KillListAdapter() {
             @Override
@@ -52,9 +58,9 @@ class MainActivityWidget extends FrameLayout {
             }
         };
 
-        final RecyclerView view = new RecyclerView(getContext());
-        view.setLayoutManager(new LinearLayoutManager(getContext()));
-        view.setAdapter(this.adapter);
-        addView(view);
+        this.recycler = new RecyclerView(getContext());
+        this.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.recycler.setAdapter(this.adapter);
+        addView(this.recycler);
     }
 }

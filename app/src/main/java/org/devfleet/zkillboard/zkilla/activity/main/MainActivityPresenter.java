@@ -48,6 +48,10 @@ public class MainActivityPresenter extends ZKillPresenter<MainActivityData> {
         return this.enabled;
     }
 
+    public boolean getShowPortraits() {
+        return this.useCase.getShowPortraits();
+    }
+
     @MainThread
     void setEnabled(final boolean enabled) {
         this.enabled = enabled;

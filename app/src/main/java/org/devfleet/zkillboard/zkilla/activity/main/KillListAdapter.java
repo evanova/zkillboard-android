@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.annimon.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.devfleet.zkillboard.zkilla.R;
 import org.devfleet.zkillboard.zkilla.eve.EveFormat;
 import org.devfleet.zkillboard.zkilla.eve.EveImages;
@@ -92,14 +93,22 @@ class KillListAdapter extends RecyclerView.Adapter<KillListAdapter.KillHolder> {
         @BindView(R.id.rowKillISKText)
         TextView iskText;
 
-        public KillHolder(final View itemView) {
+        private boolean portraits;
+
+        public KillHolder(final View itemView, final boolean portraits) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.portraits = portraits;
         }
 
         public void render(final KillEntry data) {
-            EveImages.characterIcon(data.getVictim().getCharacterID(), this.victimImage);
-
+            if (this.portraits) {
+                victimImage.setVisibility(View.VISIBLE);
+                EveImages.characterIcon(data.getVictim().getCharacterID(), this.victimImage);
+            }
+            else {
+                victimImage.setVisibility(View.GONE);
+            }
             victimText.setText(r(
                     R.string.row_kill_character,
                     data.getVictim().getCharacterName(),
@@ -138,15 +147,16 @@ class KillListAdapter extends RecyclerView.Adapter<KillListAdapter.KillHolder> {
 
     private final List<KillEntry> data = new ArrayList<>();
     private int max = 100;
+    private boolean portraits;
 
     @NonNull
     @Override
     public KillHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.row_kill,
+                R.layout.row_kill_all,
                 parent,
                 false);
-        return new KillHolder(view);
+        return new KillHolder(view, this.portraits);
     }
 
     @Override
@@ -165,18 +175,32 @@ class KillListAdapter extends RecyclerView.Adapter<KillListAdapter.KillHolder> {
             return;
         }
 
+        //deep down it's usually a ESI 504 (gateway timeout)
+        if (StringUtils.isBlank(data.getVictim().getCharacterName())) {
+            return;
+        }
+
         if (this.data.size() == max) {
             this.data.remove(this.data.size() - 1);
+            notifyItemRemoved(this.data.size());
         }
 
         this.data.add(0, new KillEntry(data));
-        notifyDataSetChanged();
+        notifyItemInserted(0);
+
     }
 
     public void setMax(final int max) {
         this.max = Math.max(1, max);
         this.data.clear();
         notifyDataSetChanged();
+    }
+
+    public void setPortraitVisible(final boolean visible) {
+        if (visible != this.portraits) {
+            this.portraits = visible;
+            notifyDataSetChanged();
+        }
     }
 
     protected void onItemClicked(final ZKillEntity item, final int position) {
