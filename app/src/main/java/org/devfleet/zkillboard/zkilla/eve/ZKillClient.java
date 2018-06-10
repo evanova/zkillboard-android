@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -80,6 +81,12 @@ public class ZKillClient {
         final OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(30,  TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
+                .certificatePinner(
+                    new CertificatePinner.Builder()
+                        .add("zkillboard.com", "sha256/MDm3xeQLwFQDO2c9btovAXQvUxjTyenfnXp/GKliWj8=")
+                        .add("zkillboard.com", "sha256/x9SZw6TwIqfmvrLZ/kz1o0Ossjmn728BnBKpUFqGNVM=")
+                        .add("zkillboard.com", "sha256/58qRu/uxh4gFezqAcERupSkRYBlBAvfcw7mEjGPLnNU=")
+                        .build())
                 .build();
 
         Request request = new Request.Builder()
