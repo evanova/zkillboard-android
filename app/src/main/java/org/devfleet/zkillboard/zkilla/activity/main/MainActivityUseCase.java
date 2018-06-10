@@ -7,8 +7,8 @@ import android.preference.PreferenceManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.devfleet.zkillboard.zkilla.arch.ZKillUseCase;
-import org.devfleet.zkillboard.zkilla.eve.ESIClient;
 import org.devfleet.zkillboard.zkilla.eve.ZKillLive;
+import org.devfleet.zkillboard.zkilla.eve.zkill.ZKillClient;
 
 import javax.inject.Inject;
 
@@ -20,11 +20,11 @@ class MainActivityUseCase extends ZKillUseCase<MainActivityData> {
     private final SharedPreferences preferences;
 
     @Inject
-    public MainActivityUseCase(final Context context, final ESIClient esi) {
+    public MainActivityUseCase(final Context context, final ZKillClient client) {
         this.preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
         final MutableLiveData<MainActivityData.State> state = new MutableLiveData<>();
-        this.zkill = new ZKillLive(esi) {
+        this.zkill = new ZKillLive(client) {
             @Override
             protected void onOpen() {
                 state.postValue(MainActivityData.State.CONNECTED);

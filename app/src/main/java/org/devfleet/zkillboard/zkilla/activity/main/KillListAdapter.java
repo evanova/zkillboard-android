@@ -15,7 +15,7 @@ import com.annimon.stream.Stream;
 import org.devfleet.zkillboard.zkilla.R;
 import org.devfleet.zkillboard.zkilla.eve.EveFormat;
 import org.devfleet.zkillboard.zkilla.eve.EveImages;
-import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
+import org.devfleet.zkillboard.zkilla.eve.zkill.ZKillEntity;
 
 import java.util.ArrayList;
 import java.util.List;

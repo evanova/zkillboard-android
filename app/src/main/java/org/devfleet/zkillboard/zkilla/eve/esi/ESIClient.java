@@ -1,5 +1,6 @@
-package org.devfleet.zkillboard.zkilla.eve;
+package org.devfleet.zkillboard.zkilla.eve.esi;
 
+import com.annimon.stream.Stream;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,31 +20,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public class ESIClient {
-
-    interface UniverseApi {
-
-        /**
-         * Get names and categories for a set of ID&#39;s
-         * Resolve a set of IDs to names and categories. Supported ID&#39;s for resolving are: Characters, Corporations, Alliances, Stations, Solar Systems, Constellations, Regions, Types.  ---
-         * @param ids The ids to resolve (required)
-         * @param datasource The server name you would like data from (optional, default to tranquility)
-         * @return Call&lt;List<PostUniverseNames200Ok>&gt;
-         */
-
-        @POST("v2/universe/names/")
-        Call<List<ESIName>> postUniverseNames(
-                @Body List<Long> ids,
-                @Query("datasource") String datasource);
-
-    }
 
     private static final Logger LOG = LoggerFactory.getLogger(ESIClient.class);
 
@@ -54,7 +34,7 @@ public class ESIClient {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private final UniverseApi api;
+    private final ESIApi api;
     private final String datasource;
 
     public ESIClient(
@@ -120,10 +100,31 @@ public class ESIClient {
                         .client(httpClient)
                         .build();
 
-        this.api = rf.create(UniverseApi.class);
+        this.api = rf.create(ESIApi.class);
     }
 
-    public List<ESIName> findNames(final List<Long> names) {
+    public List<ESIType> findTypes(final List<Long> ids, final String language) {
+        return Stream.of(ids).map(id -> {
+            try {
+                final retrofit2.Response<ESIType> r = api.getUniverseType(id, this.datasource, language).execute();
+                if (r.isSuccessful()) {
+                    return r.body();
+                }
+                LOG.error(r.message());
+                return null;
+            }
+            catch (IOException e) {
+                LOG.debug(e.getLocalizedMessage(), e);
+                LOG.error(e.getLocalizedMessage());
+                return null;
+            }
+        })
+        .filter(t -> null != t)
+        .toList();
+    }
+
+    //FIXME (ESI) language not supported on names endpoint...
+    public List<ESIName> findNames(final List<Long> names, final String language) {
         try {
             final retrofit2.Response<List<ESIName>> r = api.postUniverseNames(names, this.datasource).execute();
             if (r.isSuccessful()) {

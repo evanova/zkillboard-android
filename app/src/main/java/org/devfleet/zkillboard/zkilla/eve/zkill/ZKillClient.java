@@ -1,4 +1,4 @@
-package org.devfleet.zkillboard.zkilla.eve;
+package org.devfleet.zkillboard.zkilla.eve.zkill;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -25,6 +25,19 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 
 public class ZKillClient {
+
+    public static abstract class Listener {
+
+        @WorkerThread
+        protected void onMessage(final ZKillEntity data) {}
+
+        protected void onOpen() {}
+
+        protected void onClose() {}
+
+        protected void onFailure(Throwable t) {}
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(ZKillClient.class);
 
     private static final ObjectMapper MAPPER;
@@ -34,11 +47,20 @@ public class ZKillClient {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-
     private final PublishSubject<String> subject = PublishSubject.create();
+    private final ZKillMapper mapper;
 
+    private Listener listener;
     private WebSocket ws = null;
     private String channel = "killstream";
+
+    public ZKillClient() {
+        this(e -> e);
+    }
+
+    public ZKillClient(final ZKillMapper mapper) {
+        this.mapper = (null == mapper) ? (e -> e) : mapper;
+    }
 
     @CallSuper
     public void open(final String channel) {
@@ -55,14 +77,9 @@ public class ZKillClient {
         closeImpl();
     }
 
-    @WorkerThread
-    protected void onMessage(final ZKillEntity data) {}
-
-    protected void onOpen() {}
-
-    protected void onClose() {}
-
-    protected void onFailure(Throwable t) {}
+    public void setListener(final Listener listener) {
+        this.listener = listener;
+    }
 
     private synchronized void closeImpl() {
         if (null != this.ws) {
@@ -76,6 +93,8 @@ public class ZKillClient {
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .map(s -> MAPPER.readValue(s, ZKillEntity.class))
+                    .map(e -> mapper.map(e))
+                    .filter(e -> null != e)
                     .subscribe(d -> ZKillClient.this.onMessage(d));
 
         final OkHttpClient client = new OkHttpClient.Builder()
@@ -133,4 +152,34 @@ public class ZKillClient {
             }
         });
     }
+
+    @WorkerThread
+    @CallSuper
+    protected void onMessage(final ZKillEntity data) {
+        if (null != listener) {
+            listener.onMessage(data);
+        }
+    }
+
+    @CallSuper
+    protected void onOpen() {
+        if (null != listener) {
+            listener.onOpen();
+        }
+    }
+
+    @CallSuper
+    protected void onClose() {
+        if (null != listener) {
+            listener.onClose();
+        }
+    }
+
+    @CallSuper
+    protected void onFailure(Throwable t) {
+        if (null != listener) {
+            listener.onFailure(t);
+        }
+    }
+
 }

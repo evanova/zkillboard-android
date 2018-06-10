@@ -11,26 +11,36 @@ import android.util.LongSparseArray;
 import com.annimon.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.devfleet.zkillboard.zkilla.eve.ESIClient;
-import org.devfleet.zkillboard.zkilla.eve.ZKillClient;
-import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
+import org.devfleet.zkillboard.zkilla.eve.esi.ESIClient;
+import org.devfleet.zkillboard.zkilla.eve.esi.ESIName;
+import org.devfleet.zkillboard.zkilla.eve.zkill.ZKillClient;
+import org.devfleet.zkillboard.zkilla.eve.zkill.ZKillEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ZKillLive extends MutableLiveData<ZKillEntity> {
+
+    public enum State {
+        CONNECTING,
+        CONNECTED,
+        DISCONNECTED,
+        UNAVAILABLE,
+        ERROR
+    }
+
     private String channel = "killstream";
     private boolean enabled = false;
 
     private final ZKillClient zk;
 
-    public ZKillLive(final ESIClient esi) {
-        this.zk = new ZKillClient() {
+    public ZKillLive(final ZKillClient zk) {
+        this.zk = zk;
+        this.zk.setListener(new ZKillClient.Listener() {
             @Override
             protected void onMessage(final ZKillEntity data) {
-                final ZKillEntity mapped = map(esi, data);
-                if (null != mapped) {
-                    postValue(mapped);
+                if (null != data) {
+                    postValue(data);
                 }
             }
 
@@ -48,7 +58,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
             protected void onFailure(final Throwable t) {
                 ZKillLive.this.onFailure(t);
             }
-        };
+        });
     }
 
     @CallSuper
@@ -154,7 +164,7 @@ public class ZKillLive extends MutableLiveData<ZKillEntity> {
         });
 
         final List<ESIName> names = esi.findNames(
-                Stream.of(ids).distinct().filter(id -> id != 0).toList());
+                Stream.of(ids).distinct().filter(id -> id != 0).toList(), EveLocale.EN.getEveLocale());
 
         final LongSparseArray<String> map = new LongSparseArray<>(names.size());
         for (ESIName n: names) {

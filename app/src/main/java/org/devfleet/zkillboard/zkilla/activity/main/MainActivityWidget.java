@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
+import org.devfleet.zkillboard.zkilla.eve.zkill.ZKillEntity;
 
 class MainActivityWidget extends FrameLayout {
 

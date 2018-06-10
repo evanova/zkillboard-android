@@ -1,5 +1,5 @@
 
-package org.devfleet.zkillboard.zkilla.eve;
+package org.devfleet.zkillboard.zkilla.eve.esi;
 
 public class ESIName {
 

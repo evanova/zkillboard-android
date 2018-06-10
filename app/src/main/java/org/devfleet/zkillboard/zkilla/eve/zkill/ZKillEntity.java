@@ -1,4 +1,4 @@
-package org.devfleet.zkillboard.zkilla.eve;
+package org.devfleet.zkillboard.zkilla.eve.zkill;
 
 import com.annimon.stream.Stream;
 import com.fasterxml.jackson.annotation.JsonIgnore;

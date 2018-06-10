@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
 
         <provider
-            android:name="org.devfleet.zkillboard.zkilla.eve.ZKillProvider"
+            android:name="org.devfleet.zkillboard.zkilla.eve.zkill.ZKillProvider"
             android:authorities="org.devfleet.zkillboard"
             android:readPermission="org.devfleet.zkillboard.permission.CONTENT_READ"/>
 

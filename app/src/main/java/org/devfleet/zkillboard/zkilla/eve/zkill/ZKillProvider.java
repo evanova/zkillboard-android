@@ -1,4 +1,4 @@
-package org.devfleet.zkillboard.zkilla.eve;
+package org.devfleet.zkillboard.zkilla.eve.zkill;
 
 import android.app.SearchManager;
 import android.content.ContentResolver;

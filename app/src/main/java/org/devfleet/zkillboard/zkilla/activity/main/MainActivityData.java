@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.WorkerThread;
 
 import org.devfleet.zkillboard.zkilla.arch.ZKillData;
-import org.devfleet.zkillboard.zkilla.eve.ZKillEntity;
+import org.devfleet.zkillboard.zkilla.eve.zkill.ZKillEntity;
 
 class MainActivityData extends ZKillData {
 
